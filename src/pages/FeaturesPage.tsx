@@ -1,34 +1,42 @@
+import { useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, CheckCircle2, X } from "lucide-react";
 
-const featuresByProduct: Record<string, { title: string; description: string }[]> = {
+import hrmsEmployeeDb from "@/assets/features/hrms-employee-database.jpg";
+import hrmsPayroll from "@/assets/features/hrms-payroll.jpg";
+import hrmsLeave from "@/assets/features/hrms-leave-attendance.jpg";
+import hrmsPerformance from "@/assets/features/hrms-performance.jpg";
+import hrmsRecruitment from "@/assets/features/hrms-recruitment.jpg";
+import hrmsSelfService from "@/assets/features/hrms-self-service.jpg";
+
+const featuresByProduct: Record<string, { title: string; description: string; image: string }[]> = {
   HRMS: [
-    { title: "Employee Database", description: "Centralized storage for all employee records including personal details, documents, and employment history." },
-    { title: "Payroll Management", description: "Automated salary calculations, tax deductions, and compliance with local labor laws." },
-    { title: "Leave & Attendance", description: "Track employee attendance, manage leave requests, and generate timesheets automatically." },
-    { title: "Performance Reviews", description: "Set goals, conduct 360° reviews, and manage appraisal cycles with customizable templates." },
-    { title: "Recruitment Module", description: "Post jobs, track applicants, schedule interviews, and manage the entire hiring pipeline." },
-    { title: "Employee Self-Service", description: "Employees can view payslips, apply for leave, update info, and access company policies." },
+    { title: "Employee Database", description: "Centralized storage for all employee records including personal details, documents, and employment history.", image: hrmsEmployeeDb },
+    { title: "Payroll Management", description: "Automated salary calculations, tax deductions, and compliance with local labor laws.", image: hrmsPayroll },
+    { title: "Leave & Attendance", description: "Track employee attendance, manage leave requests, and generate timesheets automatically.", image: hrmsLeave },
+    { title: "Performance Reviews", description: "Set goals, conduct 360° reviews, and manage appraisal cycles with customizable templates.", image: hrmsPerformance },
+    { title: "Recruitment Module", description: "Post jobs, track applicants, schedule interviews, and manage the entire hiring pipeline.", image: hrmsRecruitment },
+    { title: "Employee Self-Service", description: "Employees can view payslips, apply for leave, update info, and access company policies.", image: hrmsSelfService },
   ],
   "Job Portal": [
-    { title: "Job Listings", description: "Create and publish job postings with detailed descriptions, requirements, and application forms." },
-    { title: "Candidate Tracking", description: "Track candidates through every stage of the hiring process from application to offer." },
-    { title: "Resume Parsing", description: "Automatically extract key information from resumes to speed up candidate screening." },
-    { title: "Interview Scheduling", description: "Coordinate interviews with built-in calendar integration and automated reminders." },
-    { title: "Analytics Dashboard", description: "Track hiring metrics like time-to-hire, cost-per-hire, and source effectiveness." },
+    { title: "Job Listings", description: "Create and publish job postings with detailed descriptions, requirements, and application forms.", image: hrmsRecruitment },
+    { title: "Candidate Tracking", description: "Track candidates through every stage of the hiring process from application to offer.", image: hrmsEmployeeDb },
+    { title: "Resume Parsing", description: "Automatically extract key information from resumes to speed up candidate screening.", image: hrmsSelfService },
+    { title: "Interview Scheduling", description: "Coordinate interviews with built-in calendar integration and automated reminders.", image: hrmsLeave },
+    { title: "Analytics Dashboard", description: "Track hiring metrics like time-to-hire, cost-per-hire, and source effectiveness.", image: hrmsPerformance },
   ],
   GMS: [
-    { title: "Ticket Management", description: "Create, assign, and track grievance tickets with priority levels and SLA timers." },
-    { title: "Escalation Workflows", description: "Automatic escalation rules based on time, severity, and department." },
-    { title: "Anonymous Reporting", description: "Allow employees to submit grievances anonymously for sensitive issues." },
-    { title: "Resolution Tracking", description: "Track resolution progress, add notes, and maintain a full audit trail." },
-    { title: "Compliance Reports", description: "Generate compliance reports for internal audits and regulatory requirements." },
+    { title: "Ticket Management", description: "Create, assign, and track grievance tickets with priority levels and SLA timers.", image: hrmsEmployeeDb },
+    { title: "Escalation Workflows", description: "Automatic escalation rules based on time, severity, and department.", image: hrmsPayroll },
+    { title: "Anonymous Reporting", description: "Allow employees to submit grievances anonymously for sensitive issues.", image: hrmsSelfService },
+    { title: "Resolution Tracking", description: "Track resolution progress, add notes, and maintain a full audit trail.", image: hrmsLeave },
+    { title: "Compliance Reports", description: "Generate compliance reports for internal audits and regulatory requirements.", image: hrmsPerformance },
   ],
   POS: [
-    { title: "Sales Processing", description: "Fast checkout with barcode scanning, multiple payment methods, and receipt generation." },
-    { title: "Inventory Management", description: "Real-time stock tracking, low-stock alerts, and automated reorder points." },
-    { title: "Customer Management", description: "Track customer purchase history, loyalty points, and preferences." },
-    { title: "Reporting & Analytics", description: "Daily sales reports, product performance, and revenue analytics." },
+    { title: "Sales Processing", description: "Fast checkout with barcode scanning, multiple payment methods, and receipt generation.", image: hrmsPayroll },
+    { title: "Inventory Management", description: "Real-time stock tracking, low-stock alerts, and automated reorder points.", image: hrmsEmployeeDb },
+    { title: "Customer Management", description: "Track customer purchase history, loyalty points, and preferences.", image: hrmsSelfService },
+    { title: "Reporting & Analytics", description: "Daily sales reports, product performance, and revenue analytics.", image: hrmsPerformance },
   ],
 };
 
@@ -37,6 +45,7 @@ const FeaturesPage = () => {
   const navigate = useNavigate();
   const product = searchParams.get("product") || "HRMS";
   const features = featuresByProduct[product] || featuresByProduct["HRMS"];
+  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
 
   return (
     <div className="px-4 pt-6 pb-24 max-w-md mx-auto">
@@ -56,7 +65,7 @@ const FeaturesPage = () => {
 
       {/* Feature Cards */}
       <div className="space-y-3">
-        {features.map(({ title, description }, i) => (
+        {features.map(({ title, description, image }, i) => (
           <div
             key={title}
             className="bg-card border border-border rounded-2xl p-4 hover:shadow-md transition-all"
@@ -75,9 +84,48 @@ const FeaturesPage = () => {
                 </p>
               </div>
             </div>
+            {/* Feature Screenshot */}
+            <button
+              onClick={() => setLightboxImage(image)}
+              className="mt-3 w-full rounded-xl overflow-hidden border border-border hover:border-primary/40 transition-colors cursor-zoom-in"
+            >
+              <img
+                src={image}
+                alt={`${title} screenshot`}
+                loading="lazy"
+                width={1280}
+                height={720}
+                className="w-full h-auto object-cover"
+              />
+            </button>
           </div>
         ))}
       </div>
+
+      {/* Lightbox Modal */}
+      {lightboxImage && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          onClick={() => setLightboxImage(null)}
+        >
+          {/* Blurred backdrop */}
+          <div className="absolute inset-0 bg-background/80 backdrop-blur-md" />
+          {/* Close button */}
+          <button
+            onClick={() => setLightboxImage(null)}
+            className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors"
+          >
+            <X size={20} className="text-foreground" />
+          </button>
+          {/* Image */}
+          <img
+            src={lightboxImage}
+            alt="Feature screenshot"
+            className="relative z-10 max-w-full max-h-[85vh] rounded-2xl shadow-2xl object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </div>
   );
 };
