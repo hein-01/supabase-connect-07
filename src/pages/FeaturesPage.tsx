@@ -83,6 +83,7 @@ const FeaturesPage = () => {
                   {description}
                 </p>
               </div>
+              <ChevronRight size={18} className="text-muted-foreground/50 shrink-0 mt-1" />
             </div>
             {/* Feature Screenshot */}
             <button
