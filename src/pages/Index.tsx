@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const productTabs = ["HRMS", "Job Portal", "GMS", "POS"] as const;
 
@@ -44,13 +45,14 @@ const menuItemsByTab: Record<ProductTab, { label: string; badge?: string }[]> = 
 const Index = () => {
   const [activeTab, setActiveTab] = useState<ProductTab>("HRMS");
   const navigate = useNavigate();
+  const { displayName } = useAuth();
   const items = menuItemsByTab[activeTab];
 
   return (
     <div className="px-4 pt-6 pb-24 max-w-md mx-auto">
       {/* Welcome */}
       <h1 className="text-2xl font-extrabold text-foreground mb-4">
-        Mingalarbar, user_name 👋
+        Mingalarbar, {displayName || "User"} 👋
       </h1>
 
       {/* Product Tabs */}
