@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, CheckCircle2, X } from "lucide-react";
+import { ArrowLeft, CheckCircle2, ChevronRight, X } from "lucide-react";
 
 import hrmsEmployeeDb from "@/assets/features/hrms-employee-database.jpg";
 import hrmsPayroll from "@/assets/features/hrms-payroll.jpg";
@@ -83,6 +83,7 @@ const FeaturesPage = () => {
                   {description}
                 </p>
               </div>
+              <ChevronRight size={18} className="text-muted-foreground/50 shrink-0 mt-1" />
             </div>
             {/* Feature Screenshot */}
             <button
