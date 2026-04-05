@@ -45,6 +45,7 @@ const menuItemsByTab: Record<ProductTab, { label: string; badge?: string }[]> = 
 const Index = () => {
   const [activeTab, setActiveTab] = useState<ProductTab>("HRMS");
   const navigate = useNavigate();
+  const { displayName } = useAuth();
   const items = menuItemsByTab[activeTab];
 
   return (
