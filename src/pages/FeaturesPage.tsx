@@ -91,8 +91,8 @@ const FeaturesPage = () => {
             </div>
             {/* Feature Screenshot */}
             <button
-              onClick={() => setLightboxImage(image)}
-              className="mt-3 w-full rounded-xl overflow-hidden border border-border hover:border-primary/40 transition-colors cursor-zoom-in"
+              onClick={(e) => { e.stopPropagation(); setLightboxImage(image); }}
+              className="relative mt-3 w-full rounded-xl overflow-hidden border border-border hover:border-primary/40 transition-colors cursor-zoom-in group"
             >
               <img
                 src={image}
@@ -102,6 +102,9 @@ const FeaturesPage = () => {
                 height={720}
                 className="w-full h-auto object-cover"
               />
+              <div className="absolute bottom-2 right-2 w-7 h-7 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center opacity-70 group-hover:opacity-100 transition-opacity">
+                <ZoomIn size={14} className="text-foreground" />
+              </div>
             </button>
           </div>
         ))}
