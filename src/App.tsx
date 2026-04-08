@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import ProfilePage from "./pages/ProfilePage";
 import FeaturesPage from "./pages/FeaturesPage";
+import FeatureDetailPage from "./pages/FeatureDetailPage";
 import LoginPage from "./pages/LoginPage";
 import NotFound from "./pages/NotFound";
 import BottomNav from "./components/BottomNav";
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/login" element={<LoginPage />} />
             <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
             <Route path="/features" element={<ProtectedRoute><FeaturesPage /></ProtectedRoute>} />
+            <Route path="/feature-detail" element={<ProtectedRoute><FeatureDetailPage /></ProtectedRoute>} />
             <Route path="/guides" element={<ProtectedRoute><GuidesPage /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />

@@ -175,7 +175,7 @@ const featureDetails: Record<string, Record<string, {
   },
 };
 
-const iconMap: Record<string, React.FC<{ size?: number; className?: string }>> = {
+const iconMap: Record<string, typeof Factory> = {
   shirt: Shirt,
   factory: Factory,
   shield: ShieldCheck,
