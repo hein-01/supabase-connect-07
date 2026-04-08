@@ -85,7 +85,7 @@ const FeaturesPage = () => {
                 </p>
               </div>
               <div className="flex items-center gap-1 shrink-0 mt-1 rainbow-animate">
-                <span className="text-[10px] font-semibold">ကြည့်ရန်</span>
+                <span className="text-[10px] font-semibold">ဖတ်ရန်</span>
                 <ChevronRight size={24} />
               </div>
             </div>
