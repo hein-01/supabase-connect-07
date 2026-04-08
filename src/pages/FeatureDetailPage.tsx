@@ -212,7 +212,7 @@ const FeatureDetailPage = () => {
         </button>
         <div>
           <h1 className="text-xl font-extrabold text-foreground">{feature}</h1>
-          <p className="text-xs text-muted-foreground">{product}</p>
+          <p className="text-xs text-muted-foreground">Written by Hein Htet Aung</p>
         </div>
       </div>
 
