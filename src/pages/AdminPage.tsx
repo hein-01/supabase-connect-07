@@ -249,13 +249,13 @@ const AdminPage = () => {
   const handleAddTraining = async () => {
     try {
       const filteredDialogues = newTrainingDialogues.filter((d) => d.question.trim() || d.answer.trim());
-      const { error } = await supabase.from("sales_training_cards").insert({
+      const { error } = await supabase.from("sales_training_cards").insert([{
         product: activeProduct,
         role: newTrainingRole,
         title: newTrainingTitle,
         dialogues: filteredDialogues as unknown as any,
         sort_order: trainingCards.length,
-      });
+      }]);
       if (error) throw error;
       toast({ title: "Training card added!" });
       setNewTrainingRole(""); setNewTrainingTitle(""); setNewTrainingDialogues([{ question: "", answer: "" }]); setShowAddTraining(false);
