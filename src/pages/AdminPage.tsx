@@ -253,7 +253,7 @@ const AdminPage = () => {
         product: activeProduct,
         role: newTrainingRole,
         title: newTrainingTitle,
-        dialogues: filteredDialogues,
+        dialogues: filteredDialogues as unknown as any,
         sort_order: trainingCards.length,
       });
       if (error) throw error;
@@ -271,7 +271,7 @@ const AdminPage = () => {
       const { error } = await supabase.from("sales_training_cards").update({
         role: editTrainingRole,
         title: editTrainingTitle,
-        dialogues: filteredDialogues,
+        dialogues: filteredDialogues as unknown as any,
       }).eq("id", id);
       if (error) throw error;
       toast({ title: "Training card updated!" });
