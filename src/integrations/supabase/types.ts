@@ -204,6 +204,39 @@ export type Database = {
         }
         Relationships: []
       }
+      sales_training_cards: {
+        Row: {
+          created_at: string
+          dialogues: Json
+          id: string
+          product: string
+          role: string
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          dialogues?: Json
+          id?: string
+          product: string
+          role: string
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          dialogues?: Json
+          id?: string
+          product?: string
+          role?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -18,6 +18,7 @@ import LeadsToCallPage from "./pages/LeadsToCallPage";
 import LeadDetailPage from "./pages/LeadDetailPage";
 import NotFound from "./pages/NotFound";
 import GuidesPage from "./pages/GuidesPage";
+import SalesTrainingPage from "./pages/SalesTrainingPage";
 import BottomNav from "./components/BottomNav";
 
 const queryClient = new QueryClient();
@@ -43,6 +44,7 @@ const App = () => (
             <Route path="/features" element={<ProtectedRoute><FeaturesPage /></ProtectedRoute>} />
             <Route path="/feature-detail" element={<ProtectedRoute><FeatureDetailPage /></ProtectedRoute>} />
             <Route path="/guides" element={<ProtectedRoute><GuidesPage /></ProtectedRoute>} />
+            <Route path="/sales-training" element={<ProtectedRoute><SalesTrainingPage /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
             <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
             <Route path="/outcomes" element={<ProtectedRoute><OutcomesPage /></ProtectedRoute>} />

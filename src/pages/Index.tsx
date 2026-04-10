@@ -89,6 +89,7 @@ const Index = () => {
             onClick={() => {
               if (disabled) return;
               if (label === "Features") navigate(`/features?product=${encodeURIComponent(activeTab)}`);
+              else if (label === "Sales Calls Training") navigate(`/sales-training?product=${encodeURIComponent(activeTab)}`);
               else if (label === "Leads to Call") navigate(`/leads-to-call?product=${encodeURIComponent(activeTab)}`);
               else if (label === "Call Outcomes") navigate(`/outcomes?product=${encodeURIComponent(activeTab)}`);
             }}
