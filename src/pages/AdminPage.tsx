@@ -35,12 +35,29 @@ interface Guide {
   sort_order: number;
 }
 
+interface Dialogue {
+  question: string;
+  answer: string;
+}
+
+interface TrainingCard {
+  id: string;
+  product: string;
+  role: string;
+  title: string;
+  dialogues: Dialogue[];
+  sort_order: number;
+}
+
 const AdminPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // === FEATURES STATE ===
+  // === TOP LEVEL ===
   const [activeProduct, setActiveProduct] = useState<string>("HRMS");
+  const [activeSubTab, setActiveSubTab] = useState("features");
+
+  // === FEATURES STATE ===
   const [features, setFeatures] = useState<Feature[]>([]);
   const [loadingFeatures, setLoadingFeatures] = useState(true);
   const [expandedFeature, setExpandedFeature] = useState<string | null>(null);
@@ -55,6 +72,18 @@ const AdminPage = () => {
   const [editImageFile, setEditImageFile] = useState<File | null>(null);
   const [editOverview, setEditOverview] = useState("");
   const [editUseCases, setEditUseCases] = useState<{ industry: string; icon: string; description: string }[]>([]);
+
+  // === SALES TRAINING STATE ===
+  const [trainingCards, setTrainingCards] = useState<TrainingCard[]>([]);
+  const [loadingTraining, setLoadingTraining] = useState(true);
+  const [showAddTraining, setShowAddTraining] = useState(false);
+  const [newTrainingRole, setNewTrainingRole] = useState("");
+  const [newTrainingTitle, setNewTrainingTitle] = useState("");
+  const [newTrainingDialogues, setNewTrainingDialogues] = useState<Dialogue[]>([{ question: "", answer: "" }]);
+  const [editingTrainingId, setEditingTrainingId] = useState<string | null>(null);
+  const [editTrainingRole, setEditTrainingRole] = useState("");
+  const [editTrainingTitle, setEditTrainingTitle] = useState("");
+  const [editTrainingDialogues, setEditTrainingDialogues] = useState<Dialogue[]>([]);
 
   // === GUIDES STATE ===
   const [guides, setGuides] = useState<Guide[]>([]);
@@ -86,9 +115,12 @@ const AdminPage = () => {
 
   useEffect(() => {
     fetchFeatures();
+    fetchTrainingCards();
     setExpandedFeature(null);
     setShowAddForm(false);
     setEditingId(null);
+    setShowAddTraining(false);
+    setEditingTrainingId(null);
   }, [activeProduct]);
 
   const uploadImage = async (file: File, folder: string = activeProduct): Promise<string> => {
@@ -189,6 +221,78 @@ const AdminPage = () => {
   };
   const removeUseCase = (index: number) => setEditUseCases(editUseCases.filter((_, i) => i !== index));
 
+  // === SALES TRAINING LOGIC ===
+  const fetchTrainingCards = async () => {
+    setLoadingTraining(true);
+    const { data, error } = await supabase
+      .from("sales_training_cards")
+      .select("*")
+      .eq("product", activeProduct)
+      .order("sort_order", { ascending: true });
+    if (error) {
+      toast({ title: "Error loading training cards", description: error.message, variant: "destructive" });
+    } else {
+      setTrainingCards(
+        (data || []).map((d) => ({
+          id: d.id,
+          product: d.product,
+          role: d.role,
+          title: d.title,
+          dialogues: (d.dialogues as unknown as Dialogue[]) || [],
+          sort_order: d.sort_order,
+        }))
+      );
+    }
+    setLoadingTraining(false);
+  };
+
+  const handleAddTraining = async () => {
+    try {
+      const filteredDialogues = newTrainingDialogues.filter((d) => d.question.trim() || d.answer.trim());
+      const { error } = await supabase.from("sales_training_cards").insert({
+        product: activeProduct,
+        role: newTrainingRole,
+        title: newTrainingTitle,
+        dialogues: filteredDialogues,
+        sort_order: trainingCards.length,
+      });
+      if (error) throw error;
+      toast({ title: "Training card added!" });
+      setNewTrainingRole(""); setNewTrainingTitle(""); setNewTrainingDialogues([{ question: "", answer: "" }]); setShowAddTraining(false);
+      fetchTrainingCards();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const handleUpdateTraining = async (id: string) => {
+    try {
+      const filteredDialogues = editTrainingDialogues.filter((d) => d.question.trim() || d.answer.trim());
+      const { error } = await supabase.from("sales_training_cards").update({
+        role: editTrainingRole,
+        title: editTrainingTitle,
+        dialogues: filteredDialogues,
+      }).eq("id", id);
+      if (error) throw error;
+      toast({ title: "Training card updated!" });
+      setEditingTrainingId(null);
+      fetchTrainingCards();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const handleDeleteTraining = async (id: string) => {
+    if (!confirm("Delete this training card?")) return;
+    const { error } = await supabase.from("sales_training_cards").delete().eq("id", id);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Training card deleted" });
+      fetchTrainingCards();
+    }
+  };
+
   // === GUIDES LOGIC ===
   const fetchGuides = async () => {
     setLoadingGuides(true);
@@ -249,6 +353,40 @@ const AdminPage = () => {
     }
   };
 
+  // === DIALOGUE HELPERS ===
+  const renderDialogueEditor = (dialogues: Dialogue[], setDialogues: (d: Dialogue[]) => void) => (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <Label>Dialogues (Q&A)</Label>
+        <Button onClick={() => setDialogues([...dialogues, { question: "", answer: "" }])} size="sm" variant="outline">
+          <Plus size={14} className="mr-1" /> Add Q&A
+        </Button>
+      </div>
+      {dialogues.map((d, i) => (
+        <div key={i} className="bg-muted/30 rounded-xl p-3 space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-muted-foreground">Q&A #{i + 1}</span>
+            <button onClick={() => setDialogues(dialogues.filter((_, idx) => idx !== i))} className="text-destructive hover:text-destructive/80">
+              <Trash2 size={14} />
+            </button>
+          </div>
+          <Textarea
+            value={d.question}
+            onChange={(e) => { const updated = [...dialogues]; updated[i] = { ...updated[i], question: e.target.value }; setDialogues(updated); }}
+            placeholder="Question (e.g. Customer asks...)"
+            rows={2}
+          />
+          <Textarea
+            value={d.answer}
+            onChange={(e) => { const updated = [...dialogues]; updated[i] = { ...updated[i], answer: e.target.value }; setDialogues(updated); }}
+            placeholder="Answer (e.g. Sales rep responds...)"
+            rows={2}
+          />
+        </div>
+      ))}
+    </div>
+  );
+
   return (
     <div className="px-4 pt-6 pb-24 max-w-2xl mx-auto">
       {/* Header */}
@@ -262,29 +400,31 @@ const AdminPage = () => {
         <h1 className="text-xl font-extrabold text-foreground">Admin Panel</h1>
       </div>
 
-      <Tabs defaultValue="features">
+      {/* Product Tabs */}
+      <div className="flex gap-2 mb-4 overflow-x-auto scrollbar-hide">
+        {PRODUCTS.map((p) => (
+          <button
+            key={p}
+            onClick={() => setActiveProduct(p)}
+            className={`px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-colors ${
+              activeProduct === p ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"
+            }`}
+          >
+            {p}
+          </button>
+        ))}
+      </div>
+
+      {/* Sub-tabs per product */}
+      <Tabs value={activeSubTab} onValueChange={setActiveSubTab}>
         <TabsList className="w-full mb-4">
           <TabsTrigger value="features" className="flex-1">Features</TabsTrigger>
+          <TabsTrigger value="sales-calls" className="flex-1">Sales Calls</TabsTrigger>
           <TabsTrigger value="guides" className="flex-1">Guides</TabsTrigger>
         </TabsList>
 
         {/* ========== FEATURES TAB ========== */}
         <TabsContent value="features">
-          {/* Product Tabs */}
-          <div className="flex gap-2 mb-6 overflow-x-auto scrollbar-hide">
-            {PRODUCTS.map((p) => (
-              <button
-                key={p}
-                onClick={() => setActiveProduct(p)}
-                className={`px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-colors ${
-                  activeProduct === p ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"
-                }`}
-              >
-                {p}
-              </button>
-            ))}
-          </div>
-
           {!showAddForm && (
             <Button onClick={() => setShowAddForm(true)} className="mb-4 w-full" variant="outline">
               <Plus size={16} className="mr-2" /> Add Feature
@@ -307,7 +447,7 @@ const AdminPage = () => {
           {loadingFeatures ? (
             <p className="text-muted-foreground text-sm">Loading...</p>
           ) : features.length === 0 ? (
-            <p className="text-muted-foreground text-sm text-center py-8">No features yet. Add one above!</p>
+            <p className="text-muted-foreground text-sm text-center py-8">No features yet for {activeProduct}. Add one above!</p>
           ) : (
             <div className="space-y-3">
               {features.map((feature) => (
@@ -364,8 +504,68 @@ const AdminPage = () => {
           )}
         </TabsContent>
 
+        {/* ========== SALES CALLS TAB ========== */}
+        <TabsContent value="sales-calls">
+          {!showAddTraining && (
+            <Button onClick={() => setShowAddTraining(true)} className="mb-4 w-full" variant="outline">
+              <Plus size={16} className="mr-2" /> Add Training Card
+            </Button>
+          )}
+
+          {showAddTraining && (
+            <div className="bg-card border border-border rounded-2xl p-4 mb-4 space-y-3">
+              <h3 className="font-bold text-sm text-foreground">New Training Card for {activeProduct}</h3>
+              <div className="space-y-2"><Label>Role</Label><Input value={newTrainingRole} onChange={(e) => setNewTrainingRole(e.target.value)} placeholder="e.g. Sales Rep, Customer, Manager" /></div>
+              <div className="space-y-2"><Label>Title</Label><Input value={newTrainingTitle} onChange={(e) => setNewTrainingTitle(e.target.value)} placeholder="Scenario title" /></div>
+              {renderDialogueEditor(newTrainingDialogues, setNewTrainingDialogues)}
+              <div className="flex gap-2">
+                <Button onClick={handleAddTraining} disabled={!newTrainingTitle.trim() || !newTrainingRole.trim()} size="sm">Add</Button>
+                <Button onClick={() => setShowAddTraining(false)} variant="ghost" size="sm">Cancel</Button>
+              </div>
+            </div>
+          )}
+
+          {loadingTraining ? (
+            <p className="text-muted-foreground text-sm">Loading...</p>
+          ) : trainingCards.length === 0 ? (
+            <p className="text-muted-foreground text-sm text-center py-8">No training cards yet for {activeProduct}. Add one above!</p>
+          ) : (
+            <div className="space-y-3">
+              {trainingCards.map((card) => (
+                <div key={card.id} className="bg-card border border-border rounded-2xl p-4">
+                  {editingTrainingId === card.id ? (
+                    <div className="space-y-3">
+                      <div className="space-y-2"><Label>Role</Label><Input value={editTrainingRole} onChange={(e) => setEditTrainingRole(e.target.value)} /></div>
+                      <div className="space-y-2"><Label>Title</Label><Input value={editTrainingTitle} onChange={(e) => setEditTrainingTitle(e.target.value)} /></div>
+                      {renderDialogueEditor(editTrainingDialogues, setEditTrainingDialogues)}
+                      <div className="flex gap-2">
+                        <Button onClick={() => handleUpdateTraining(card.id)} size="sm"><Save size={14} className="mr-1" /> Save</Button>
+                        <Button onClick={() => setEditingTrainingId(null)} variant="ghost" size="sm">Cancel</Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-muted text-muted-foreground">{card.role}</span>
+                        <h3 className="font-bold text-sm text-foreground mt-1">{card.title}</h3>
+                        <p className="text-xs text-muted-foreground mt-0.5">{card.dialogues.length} dialogue{card.dialogues.length !== 1 ? "s" : ""}</p>
+                      </div>
+                      <div className="flex gap-1 shrink-0">
+                        <button onClick={() => { setEditingTrainingId(card.id); setEditTrainingRole(card.role); setEditTrainingTitle(card.title); setEditTrainingDialogues(card.dialogues); }} className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center hover:bg-muted/80"><Pencil size={14} className="text-foreground" /></button>
+                        <button onClick={() => handleDeleteTraining(card.id)} className="w-8 h-8 rounded-lg bg-destructive/10 flex items-center justify-center hover:bg-destructive/20"><Trash2 size={14} className="text-destructive" /></button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </TabsContent>
+
         {/* ========== GUIDES TAB ========== */}
         <TabsContent value="guides">
+          <p className="text-xs text-muted-foreground mb-4">Guides are shared across all products.</p>
+
           {!showAddGuide && (
             <Button onClick={() => setShowAddGuide(true)} className="mb-4 w-full" variant="outline">
               <Plus size={16} className="mr-2" /> Add Guide
