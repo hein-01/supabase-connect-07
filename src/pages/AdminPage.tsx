@@ -243,6 +243,7 @@ const AdminPage = () => {
           title: d.title,
           dialogues: (d.dialogues as unknown as Dialogue[]) || [],
           sort_order: d.sort_order,
+          image_url: (d as any).image_url || "",
         }))
       );
     }
