@@ -85,6 +85,8 @@ const AdminPage = () => {
   const [editTrainingRole, setEditTrainingRole] = useState("");
   const [editTrainingTitle, setEditTrainingTitle] = useState("");
   const [editTrainingDialogues, setEditTrainingDialogues] = useState<Dialogue[]>([]);
+  const [newTrainingImageFile, setNewTrainingImageFile] = useState<File | null>(null);
+  const [editTrainingImageFile, setEditTrainingImageFile] = useState<File | null>(null);
 
   // === GUIDES STATE ===
   const [guides, setGuides] = useState<Guide[]>([]);
