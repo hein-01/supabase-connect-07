@@ -528,10 +528,11 @@ const AdminPage = () => {
               <h3 className="font-bold text-sm text-foreground">New Training Card for {activeProduct}</h3>
               <div className="space-y-2"><Label>Role</Label><Input value={newTrainingRole} onChange={(e) => setNewTrainingRole(e.target.value)} placeholder="e.g. Sales Rep, Customer, Manager" /></div>
               <div className="space-y-2"><Label>Title</Label><Input value={newTrainingTitle} onChange={(e) => setNewTrainingTitle(e.target.value)} placeholder="Scenario title" /></div>
+              <div className="space-y-2"><Label>Image</Label><Input type="file" accept="image/*" onChange={(e) => setNewTrainingImageFile(e.target.files?.[0] || null)} /></div>
               {renderDialogueEditor(newTrainingDialogues, setNewTrainingDialogues)}
               <div className="flex gap-2">
                 <Button onClick={handleAddTraining} disabled={!newTrainingTitle.trim() || !newTrainingRole.trim()} size="sm">Add</Button>
-                <Button onClick={() => setShowAddTraining(false)} variant="ghost" size="sm">Cancel</Button>
+                <Button onClick={() => { setShowAddTraining(false); setNewTrainingImageFile(null); }} variant="ghost" size="sm">Cancel</Button>
               </div>
             </div>
           )}
