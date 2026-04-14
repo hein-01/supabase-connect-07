@@ -13,6 +13,7 @@ interface TrainingCard {
   role: string;
   title: string;
   dialogues: Dialogue[];
+  image_url: string | null;
 }
 
 const roleIcons: Record<string, React.ReactNode> = {

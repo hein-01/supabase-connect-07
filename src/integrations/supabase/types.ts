@@ -209,6 +209,7 @@ export type Database = {
           created_at: string
           dialogues: Json
           id: string
+          image_url: string | null
           product: string
           role: string
           sort_order: number
@@ -219,6 +220,7 @@ export type Database = {
           created_at?: string
           dialogues?: Json
           id?: string
+          image_url?: string | null
           product: string
           role: string
           sort_order?: number
@@ -229,6 +231,7 @@ export type Database = {
           created_at?: string
           dialogues?: Json
           id?: string
+          image_url?: string | null
           product?: string
           role?: string
           sort_order?: number
