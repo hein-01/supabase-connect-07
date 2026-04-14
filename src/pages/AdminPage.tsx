@@ -47,6 +47,7 @@ interface TrainingCard {
   title: string;
   dialogues: Dialogue[];
   sort_order: number;
+  image_url: string;
 }
 
 const AdminPage = () => {
