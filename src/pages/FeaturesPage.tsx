@@ -96,7 +96,7 @@ const FeaturesPage = () => {
         </button>
         <div>
           <h1 className="text-xl font-extrabold text-foreground">{product} Features</h1>
-          <p className="text-xs text-muted-foreground">{features.length} features to learn</p>
+          <p className="text-xs text-muted-foreground">{features.length} screens to learn</p>
         </div>
       </div>
 
