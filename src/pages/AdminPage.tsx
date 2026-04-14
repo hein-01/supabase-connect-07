@@ -274,15 +274,19 @@ const AdminPage = () => {
 
   const handleUpdateTraining = async (id: string) => {
     try {
+      let imageUrl: string | undefined;
+      if (editTrainingImageFile) imageUrl = await uploadImage(editTrainingImageFile, `training/${activeProduct}`);
       const filteredDialogues = editTrainingDialogues.filter((d) => d.question.trim() || d.answer.trim());
-      const { error } = await supabase.from("sales_training_cards").update({
+      const updateData: any = {
         role: editTrainingRole,
         title: editTrainingTitle,
-        dialogues: filteredDialogues as unknown as any,
-      }).eq("id", id);
+        dialogues: filteredDialogues,
+      };
+      if (imageUrl) updateData.image_url = imageUrl;
+      const { error } = await supabase.from("sales_training_cards").update(updateData).eq("id", id);
       if (error) throw error;
       toast({ title: "Training card updated!" });
-      setEditingTrainingId(null);
+      setEditingTrainingId(null); setEditTrainingImageFile(null);
       fetchTrainingCards();
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
