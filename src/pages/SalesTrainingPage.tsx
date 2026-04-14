@@ -13,6 +13,7 @@ interface TrainingCard {
   role: string;
   title: string;
   dialogues: Dialogue[];
+  image_url: string | null;
 }
 
 const roleIcons: Record<string, React.ReactNode> = {
@@ -51,6 +52,7 @@ const SalesTrainingPage = () => {
             role: d.role,
             title: d.title,
             dialogues: (d.dialogues as unknown as Dialogue[]) || [],
+            image_url: (d as any).image_url || null,
           }))
         );
       }
@@ -95,6 +97,13 @@ const SalesTrainingPage = () => {
                 key={card.id}
                 className="bg-card border border-border rounded-2xl overflow-hidden transition-all hover:shadow-md"
               >
+                {card.image_url && (
+                  <img
+                    src={card.image_url}
+                    alt={card.title}
+                    className="w-full h-36 object-cover"
+                  />
+                )}
                 <button
                   onClick={() => setExpandedCard(isExpanded ? null : card.id)}
                   className="w-full p-4 flex items-start gap-3 text-left"
