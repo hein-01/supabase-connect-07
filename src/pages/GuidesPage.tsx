@@ -79,10 +79,6 @@ const GuidesPage = () => {
                 </div>
                 <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{description}</p>
               </div>
-              <div className="flex items-center gap-1 shrink-0 mt-1 rainbow-animate">
-                <span className="text-[10px] font-semibold">ဖတ်ရန်</span>
-                <ChevronRight size={24} />
-              </div>
             </div>
             {image && (
               <button
