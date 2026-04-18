@@ -4,7 +4,10 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -31,44 +34,70 @@ const mockLeadDetails: Record<string, { company: string; phones: { label: string
   "27": { company: "Dunder Mifflin", phones: [{ label: "Michael", number: "+1555000555" }, { label: "Dwight", number: "+1555000666" }] },
 };
 
-const outcomeOptions = [
-  "Meeting Scheduled",
-  "Demo Requested",
-  "Trial Accepted / Trial Started",
-  "Proposal Sent",
-  "Verbal Commitment",
-  "Contract Sent",
-  "Deal Won / Closed Won",
-  "Callback Requested",
-  "Send Information / Send Pricing",
-  "Decision Maker Not Available",
-  "Call Back Later (general)",
-  "Not Now / Check Back Later",
-  "Lead Nurturing (keep in sequence)",
-  "Not Interested",
-  "Already Using Competitor",
-  "No Budget",
-  "No Authority (wrong contact)",
-  "No Need / No Use Case",
-  "Just Browsing / Researching",
-  "Not a Fit",
-  "Deal Lost (to competitor or status quo)",
-  "Wrong Number",
-  "No Answer / Voicemail Left",
-  "Invalid Email",
-  "Disconnected Number",
-  "Left Voicemail (no callback yet)",
-  "Rescheduled by Prospect",
-  "Rescheduled by Sales Rep",
-  "Did Not Show (for scheduled call)",
-  "Canceled by Prospect",
-  "Bad Timing (company in freeze, end of quarter, etc.)",
-  "Gatekeeper Blocked",
-  "Left Voicemail + Sent Email",
-  "Attempted Contact (no answer)",
-  "Unqualified (BANT failure)",
-  "Referral Given",
+const outcomeGroups: { label: string; options: string[] }[] = [
+  {
+    label: "Positive",
+    options: [
+      "Meeting Scheduled",
+      "Demo Requested",
+      "Trial Accepted / Trial Started",
+      "Proposal Sent",
+      "Verbal Commitment",
+      "Contract Sent",
+      "Deal Won / Closed Won",
+      "Referral Given",
+    ],
+  },
+  {
+    label: "Follow-up",
+    options: [
+      "Callback Requested",
+      "Send Information / Send Pricing",
+      "Decision Maker Not Available",
+      "Call Back Later (general)",
+      "Not Now / Check Back Later",
+      "Lead Nurturing (keep in sequence)",
+      "Attempted Contact (no answer)",
+      "Left Voicemail + Sent Email",
+    ],
+  },
+  {
+    label: "Negative",
+    options: [
+      "Not Interested",
+      "Already Using Competitor",
+      "No Budget",
+      "No Authority (wrong contact)",
+      "No Need / No Use Case",
+      "Just Browsing / Researching",
+      "Not a Fit",
+      "Deal Lost (to competitor or status quo)",
+      "Unqualified (BANT failure)",
+    ],
+  },
+  {
+    label: "Contact Issues",
+    options: [
+      "Wrong Number",
+      "No Answer / Voicemail Left",
+      "Invalid Email",
+      "Disconnected Number",
+      "Left Voicemail (no callback yet)",
+      "Gatekeeper Blocked",
+    ],
+  },
+  {
+    label: "Scheduling",
+    options: [
+      "Rescheduled by Prospect",
+      "Rescheduled by Sales Rep",
+      "Did Not Show (for scheduled call)",
+      "Canceled by Prospect",
+      "Bad Timing (company in freeze, end of quarter, etc.)",
+    ],
+  },
 ];
+
 
 const LeadDetailPage = () => {
   const [searchParams] = useSearchParams();
@@ -213,11 +242,21 @@ const LeadDetailPage = () => {
           <SelectTrigger className="rounded-2xl">
             <SelectValue placeholder="Select outcome..." />
           </SelectTrigger>
-          <SelectContent>
-            {outcomeOptions.map((option) => (
-              <SelectItem key={option} value={option}>
-                {option}
-              </SelectItem>
+          <SelectContent className="max-h-[60vh]">
+            {outcomeGroups.map((group, idx) => (
+              <div key={group.label}>
+                {idx > 0 && <SelectSeparator />}
+                <SelectGroup>
+                  <SelectLabel className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
+                    {group.label}
+                  </SelectLabel>
+                  {group.options.map((option) => (
+                    <SelectItem key={option} value={option}>
+                      {option}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </div>
             ))}
           </SelectContent>
         </Select>
