@@ -1,4 +1,4 @@
-import { Trophy, BookOpen, LogOut } from "lucide-react";
+import { Trophy, BookOpen, LogOut, TrendingUp, Wallet, PiggyBank } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -34,7 +34,7 @@ const ProfilePage = () => {
         <p className="text-sm text-muted-foreground">Tech Solution & Customer Success</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 mb-6">
+      <div className="grid grid-cols-2 gap-3 mb-4">
         {stats.map((stat) => (
           <div
             key={stat.label}
@@ -47,6 +47,44 @@ const ProfilePage = () => {
             <span className="text-[10px] font-semibold text-muted-foreground">{stat.label}</span>
           </div>
         ))}
+      </div>
+
+      <div className="flex flex-col gap-3 mb-6">
+        <div className="bg-card rounded-2xl p-4 border border-border flex items-center gap-3">
+          <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+            <TrendingUp size={20} />
+          </div>
+          <div className="flex flex-col min-w-0 flex-1">
+            <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">
+              Upcoming Commission This Month
+            </span>
+            <span className="text-lg font-extrabold text-foreground">$1,250</span>
+          </div>
+        </div>
+
+        <div className="bg-card rounded-2xl p-4 border border-border flex items-center gap-3">
+          <div className="w-11 h-11 rounded-xl bg-accent/15 text-accent flex items-center justify-center shrink-0">
+            <Wallet size={20} />
+          </div>
+          <div className="flex flex-col min-w-0 flex-1">
+            <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">
+              Commission Payout Last Month
+            </span>
+            <span className="text-lg font-extrabold text-foreground">$980</span>
+          </div>
+        </div>
+
+        <div className="bg-card rounded-2xl p-4 border border-border flex items-center gap-3">
+          <div className="w-11 h-11 rounded-xl bg-success/10 text-success flex items-center justify-center shrink-0">
+            <PiggyBank size={20} />
+          </div>
+          <div className="flex flex-col min-w-0 flex-1">
+            <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">
+              Commission Payout All Time
+            </span>
+            <span className="text-lg font-extrabold text-foreground">$14,320</span>
+          </div>
+        </div>
       </div>
 
       <div className="bg-card rounded-2xl p-4 border border-border mb-4">
