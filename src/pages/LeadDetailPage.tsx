@@ -52,11 +52,35 @@ const LeadDetailPage = () => {
   const detail = mockLeadDetails[leadId];
   const phones = detail?.phones || [{ label: "Main", number: "+0000000000" }];
 
-  const [notes, setNotes] = useState("");
-  const [selectedOutcome, setSelectedOutcome] = useState(currentOutcome || "");
+  const STORAGE_KEY = "lead_outcomes_local";
+
+  type SavedOutcome = {
+    leadId: string;
+    company: string;
+    outcome: string;
+    notes?: string;
+    product: string;
+    savedAt: number;
+  };
+
+  const readAll = (): SavedOutcome[] => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? (JSON.parse(raw) as SavedOutcome[]) : [];
+    } catch {
+      return [];
+    }
+  };
+
+  const existing = readAll().find((o) => o.leadId === leadId && o.product === product);
+
+  const [notes, setNotes] = useState(existing?.notes || "");
+  const [selectedOutcome, setSelectedOutcome] = useState(existing?.outcome || (currentOutcome && currentOutcome !== "Leads to Call" ? currentOutcome : ""));
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
-  const hasUnsavedChanges = notes.trim() !== "" || selectedOutcome !== currentOutcome;
+  const initialNotes = existing?.notes || "";
+  const initialOutcome = existing?.outcome || (currentOutcome && currentOutcome !== "Leads to Call" ? currentOutcome : "");
+  const hasUnsavedChanges = notes !== initialNotes || selectedOutcome !== initialOutcome;
 
   const performNavigateBack = () => {
     if (currentOutcome === "Leads to Call") {
