@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, CheckCircle2, ChevronRight, X, ZoomIn } from "lucide-react";
+import { ArrowLeft, CheckCircle2, X, ZoomIn } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
